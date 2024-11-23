@@ -1,0 +1,198 @@
+create database db_sistema_faculdade;
+use db_sistema_faculdade;
+
+drop database db_sistema_faculdade;
+
+create table tbl_aluno (
+    id int not null primary key auto_increment,
+    nome varchar(100)not null ,
+    cpf varchar(14)not null ,
+    telefone varchar(15)not null ,
+    email varchar(100)not null ,
+    data_nascimento date not null ,
+    data_matricula date not null 
+);
+
+create table tbl_endereco (
+id int not null primary key auto_increment,
+logradouro varchar(100) not null,
+ bairro varchar(100) not null,
+ cep varchar(8) not null,
+ cidade varchar(100) not null,
+ estado varchar(100) not null,
+ id_aluno int not null,
+ 
+constraint fk_endereco_aluno
+foreign key (id_aluno)
+references tbl_aluno (id),
+
+unique index (id)  );
+
+
+create table tbl_professor (
+    id int not null primary key auto_increment,
+    nome varchar(100) not null,
+    cpf varchar(14) not null,
+    data_contratacao date not null,
+    departamento varchar(100) not null 
+);
+
+
+create table tbl_curso (
+    id int not null primary key auto_increment,
+    nome varchar(100) not null,
+    duracao int not null
+);
+
+
+create table tbl_disciplina (
+    id int not null primary key auto_increment,
+    nome varchar(100) not null,
+    carga_horaria int not null,
+    id_curso int not null,
+    
+    constraint fk_disciplina_curso
+    foreign key (id_curso) 
+    references tbl_curso (id),
+   
+   unique index (id)  
+);
+
+create table tbl_turma (
+id int not null primary key auto_increment,
+id_disciplina int not null,
+id_professor int not null,
+
+constraint fk_turma_disciplina
+foreign key (id_disciplina)
+references tbl_disciplina (id),
+
+constraint fk_turma_professor
+foreign key (id_professor)
+references tbl_professor (id),
+
+unique index (id)
+ );
+
+create table tbl_matricula (
+    id int not null primary key auto_increment,
+    id_aluno int not null,
+    id_turma int not null,
+    
+    constraint fk_matricula_aluno
+    foreign key (id_aluno) 
+    references tbl_aluno (id),
+   
+   constraint fk_matricula_turma
+    foreign key (id_turma) 
+    references tbl_turma (id),
+    
+   unique index (id)  
+);
+
+create table tbl_nota (
+    id int not null primary key auto_increment,
+    nota float not null,
+    data_nota date not null,
+    id_matricula int not null,
+    
+    constraint fk_nota_matricula
+    foreign key (id_matricula) 
+    references tbl_matricula (id),
+   
+   unique index (id)  
+);
+
+desc tbl_aluno;
+desc tbl_endereco;
+desc tbl_curso;
+desc tbl_disciplina;
+desc tbl_professor;
+desc tbl_turma;
+desc tbl_matricula;
+desc  tbl_nota;
+drop table tbl_nota;
+
+insert into tbl_aluno (nome, cpf, telefone, email, data_nascimento, data_matricula) values
+('Ana Silva', '12345678900', '21999999999', 'ana@gmail.com', '2000-01-01', '2023-01-01'),
+('Carlos Souza', '23456789001', '21988888888', 'carlos@gmail.com', '1999-02-02', '2023-01-01'),
+('Maria Oliveira', '34567890102', '21977777777', 'maria@gmail.com', '1998-03-03', '2023-01-01'),
+('João Pereira', '45678901203', '21966666666', 'joao@gmail.com', '1997-04-04', '2023-01-01'),
+('Julia Santos', '56789012304', '21955555555', 'julia@gmail.com', '2001-05-05', '2023-01-01'),
+('Pedro Lima', '67890123405', '21944444444', 'pedro@gmail.com', '2000-06-06', '2023-01-01'),
+('Mariana Rocha', '78901234506', '21933333333', 'mariana@gmail.com', '1999-07-07', '2023-01-01'),
+('Felipe Costa', '89012345607', '21922222222', 'felipe@gmail.com', '1998-08-08', '2023-01-01'),
+('Camila Castro', '90123456708', '21911111111', 'camila@gmail.com', '2001-09-09', '2023-01-01'),
+('Lucas Almeida', '01234567809', '21900000000', 'lucas@gmail.com', '1997-10-10', '2023-01-01');
+
+insert into tbl_endereco (logradouro, bairro, cep, cidade, estado,id_aluno) values
+('Rua das Flores, 100', 'Centro', '12345678', 'São Paulo', 'SP',1),
+('Av. Paulista, 200', 'Bela Vista', '87654321', 'São Paulo', 'SP',2),
+('Rua das Palmeiras, 300', 'Copacabana', '23456789', 'Rio de Janeiro', 'RJ',3),
+('Av. Brasil, 400', 'Jardim América', '34567890', 'Rio de Janeiro', 'RJ',4),
+('Rua das Laranjeiras, 500', 'Flamengo', '45678901', 'Rio de Janeiro', 'RJ',5),
+('Av. do Contorno, 600', 'Savassi', '56789012', 'Belo Horizonte', 'MG',6),
+('Rua XV de Novembro, 700', 'Centro', '67890123', 'Curitiba', 'PR',7),
+('Av. Independência, 800', 'Cidade Baixa', '78901234', 'Porto Alegre', 'RS',8),
+('Rua das Acácias, 900', 'Centro', '89012345', 'Florianópolis', 'SC',9),
+('Av. Amazonas, 1000', 'Lourdes', '90123456', 'Belo Horizonte', 'MG',10);
+
+insert into tbl_professor (nome, cpf, data_contratacao, departamento) values
+('Prof. Aline Marques', '11222333444', '2022-01-15', 'Administração'),
+('Prof. Bruno Nunes', '22333444555', '2021-03-20', 'Engenharia'),
+('Prof. Clara Souza', '33444555666', '2019-05-25', 'Direito'),
+('Prof. Daniel Alves', '44555666777', '2020-07-30', 'Medicina'),
+('Prof. Eliane Pinto', '55666777888', '2018-09-10', 'Pedagogia');
+
+insert into tbl_curso (nome, duracao) values
+('Administração', 4),
+('Engenharia', 5),
+('Direito', 5),
+('Medicina', 6),
+('Pedagogia', 4);
+
+insert into tbl_disciplina (nome, carga_horaria, id_curso) values
+('Matemática Aplicada', 60, 1),
+('Introdução à Engenharia', 60, 2),
+('Direito Constitucional', 80, 3),
+('Anatomia', 100, 4),
+('Fundamentos da Educação', 40, 5),
+('Marketing', 60, 1),
+('Física Geral', 80, 2),
+('Direito Penal', 80, 3),
+('Biologia Humana', 100, 4);
+
+insert into tbl_turma (id_disciplina, id_professor) values
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5),
+(6, 1),
+(7, 2),
+(8, 3),
+(9, 4);
+
+insert into tbl_matricula (id_aluno, id_turma) values
+(1, 1), (2, 1), (3, 2), (4, 2), (5, 3),
+(6, 3), (7, 4), (8, 4), (9, 5), (10, 5),
+(1, 6), (2, 6), (3, 7), (4, 7), (5, 8),
+(6, 8), (7, 9), (8, 9), (9, 1), (10, 2);
+
+insert into tbl_nota (nota, data_nota, id_matricula) values
+(8.5, '2023-06-15', 1), (7.0, '2023-06-16', 2), (9.0, '2023-06-17', 3), 
+(6.5, '2023-06-18', 4), (10.0, '2023-06-19', 5), (5.5, '2023-06-20', 6), 
+(8.0, '2023-06-21', 7), (9.5, '2023-06-22', 8), (7.5, '2023-06-23', 9), 
+(6.0, '2023-06-24', 10), (8.7, '2023-06-25', 11), (7.8, '2023-06-26', 12),
+(9.1, '2023-06-27', 13), (6.8, '2023-06-28', 14), (7.3, '2023-06-29', 15),
+(8.9, '2023-06-30', 16), (6.2, '2023-07-01', 17), (9.7, '2023-07-02', 18),
+(7.4, '2023-07-03', 19), (5.8, '2023-07-04', 20);
+
+select * from  tbl_aluno;
+select * from tbl_endereco;
+select * from tbl_professor;
+select * from tbl_curso;
+select * from tbl_disciplina;
+select * from tbl_turma;
+select * from tbl_matricula;
+select * from tbl_nota;
